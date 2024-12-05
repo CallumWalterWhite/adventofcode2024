@@ -47,6 +47,7 @@ if __name__ == "__main__":
         nodes[node[0]].append(node[1])
     valid_reports = []
     invalid_reports = []
+    total = 0
     for report in reports:
         pages = report.copy()
         pages.reverse()
@@ -56,15 +57,12 @@ if __name__ == "__main__":
                 valid = False
                 break
         if valid:
-            valid_reports.append(report)
+            middle_page = len(report) // 2
+            total += report[middle_page]
         else:
             invalid_reports.append(report)
-    total = 0
-    for report in valid_reports:
-        middle_page = len(report) // 2
-        total += report[middle_page]
     print(total)
-    
+    total = 0
     newvalid_reports = []
     for report in invalid_reports:
         pages = report.copy()
@@ -81,11 +79,7 @@ if __name__ == "__main__":
                     break
             if inner_validtion:
                 valid = True
-                newvalid_reports.append(pages)
+                middle_page = len(report) // 2
+                total += report[middle_page]
             else:
                 continue
-    total = 0
-    for report in newvalid_reports:
-        middle_page = len(report) // 2
-        total += report[middle_page]
-    print(total)
