@@ -61,7 +61,7 @@ if __name__ == "__main__":
             total += report[middle_page]
         else:
             invalid_reports.append(report)
-    print(total)
+    print(total) # part 1
     total = 0
     newvalid_reports = []
     for report in invalid_reports:
@@ -83,3 +83,4 @@ if __name__ == "__main__":
                 total += report[middle_page]
             else:
                 continue
+    print(total) # part 2
