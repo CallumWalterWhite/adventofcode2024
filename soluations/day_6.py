@@ -51,41 +51,33 @@ if __name__ == "__main__":
     unique_points.add((cur_x, cur_y))
     while(is_valid(cur_x, cur_y)):
         if pos_mov == "up":
-            if matrix_data[cur_y][cur_x] == "#":
+            if (cur_x, cur_y) in obstacles:
                 pos_mov = pos_mov_map[pos_mov]
-                obstacles.add((cur_x, cur_y))
                 cur_y += 1
-                turning_points.add((cur_x, cur_y))
                 cur_x += 1
                 continue
             unique_points.add((cur_x, cur_y))
             cur_y -= 1
         if pos_mov == "right":
-            if matrix_data[cur_y][cur_x] == "#":
+            if (cur_x, cur_y) in obstacles:
                 pos_mov = pos_mov_map[pos_mov]
-                obstacles.add((cur_x, cur_y))
                 cur_x -= 1
-                turning_points.add((cur_x, cur_y))
                 cur_y += 1
                 continue
             unique_points.add((cur_x, cur_y))
             cur_x += 1
         if pos_mov == "down":
-            if matrix_data[cur_y][cur_x] == "#":
+            if (cur_x, cur_y) in obstacles:
                 pos_mov = pos_mov_map[pos_mov]
-                obstacles.add((cur_x, cur_y))
                 cur_y -= 1
-                turning_points.add((cur_x, cur_y))
                 cur_x -= 1
                 continue
             unique_points.add((cur_x, cur_y))
             cur_y += 1
         if pos_mov == "left":
-            if matrix_data[cur_y][cur_x] == "#":
+            if (cur_x, cur_y) in obstacles:
                 pos_mov = pos_mov_map[pos_mov]
-                obstacles.add((cur_x, cur_y))
                 cur_x += 1
-                turning_points.add((cur_x, cur_y))
                 cur_y -= 1
                 continue
             unique_points.add((cur_x, cur_y))
@@ -108,14 +100,13 @@ if __name__ == "__main__":
 
         return False
     
-    print(len(unique_points))
+    print(len(unique_points)) # part 1
     
     g_pos = set()
     unique_points.remove((start_x, start_y))
-    print(len(obstacles))
     for point in unique_points:
         obstacles.add(point)
         if is_loop(obstacles, (start_x, start_y), max_x, max_y):
             g_pos.add(point)
         obstacles.remove(point)
-    print(len(g_pos))
+    print(len(g_pos)) # part 2
