@@ -6,7 +6,7 @@ if __name__ == "__main__":
     max_x = len(topo_map[0])
     max_y = len(topo_map)
     
-    def dbs_trailhead(x, y, n_v):
+    def dfs_trailhead(x, y, n_v):
         if x < 0 or x >= max_x or y < 0 or y >= max_y:
             return []
         if int(topo_map[y][x]) != n_v:
@@ -16,10 +16,10 @@ if __name__ == "__main__":
         directions = [(0,1), (1,0), (0,-1), (-1,0)]
         result = []
         for d in directions:
-            result.extend(dbs_trailhead(x + d[0], y + d[1], n_v + 1))
+            result.extend(dfs_trailhead(x + d[0], y + d[1], n_v + 1))
         return result
     
-    def dbs_trailhead_dis(x, y, n_v):
+    def dfs_trailhead_dis(x, y, n_v):
         if x < 0 or x >= max_x or y < 0 or y >= max_y:
             return 0
         if int(topo_map[y][x]) != n_v:
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         directions = [(0,1), (1,0), (0,-1), (-1,0)]
         results = 0
         for d in directions:
-            results += dbs_trailhead_dis(x + d[0], y + d[1], n_v + 1)
+            results += dfs_trailhead_dis(x + d[0], y + d[1], n_v + 1)
         return results
     
     trails = []
@@ -38,8 +38,8 @@ if __name__ == "__main__":
             if topo_map[i][j] == "0":
                 trails.append({
                     "start": (j, i),
-                    "trail": set(dbs_trailhead(j, i, 0)),
-                    "distinct": dbs_trailhead_dis(j, i, 0)
+                    "trail": set(dfs_trailhead(j, i, 0)),
+                    "distinct": dfs_trailhead_dis(j, i, 0)
                 })
     print(sum([len(trail["trail"]) for trail in trails])) # part 1
     print(sum([trail["distinct"] for trail in trails])) # part 2
