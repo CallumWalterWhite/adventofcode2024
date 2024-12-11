@@ -1,84 +1,43 @@
 from util.input import get_input_as_list
-import concurrent.futures
-from typing import List, Dict
+import functools
 
-class RecursiveSetSolver:
-    def __init__(self):
-        self.cache: Dict[str, List[str]] = {}
-        self.cache_lock = concurrent.futures.thread.Lock()
+@functools.lru_cache(maxsize=None)
+def single_blink_stone(value):
+    text = str(value)
+    num_of_digits = len(text)
+    if value == 0:
+        return (1, None)
+    elif num_of_digits % 2 == 0:
+        mid_point = num_of_digits // 2
+        left_stone = int(text[:mid_point])
+        right_stone = int(text[mid_point:])
 
-    def recursive_set(self, num: str, b: int) -> List[str]:
-        if b == 75:
-            return [num]
-        
-        result: List[str] = []
-        if num == "0":
-            result = ["1"]
-        elif len(num) % 2 == 0:
-            mid = len(num) // 2
-            left_num = int(num[:mid])
-            right_num = int(num[mid:])
-            result = [str(left_num), str(right_num)]
+        return (left_stone, right_stone)
+    
+    else:
+        return (value * 2024, None)
+
+@functools.lru_cache(maxsize=None)
+def count_stone_blinks(stone, depth):
+    left_stone, right_stone = single_blink_stone(stone)
+    if depth == 1:
+        if right_stone is None:
+            return 1
         else:
-            new_num = str(int(num) * 2024)
-            result = [new_num]
-
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            recursive_results = list(executor.map(
-                lambda r: self.recursive_set(r, b + 1), 
-                result
-            ))
-        flattened_results = [
-            item for sublist in recursive_results 
-            for item in (sublist if isinstance(sublist, list) else [sublist])
-        ]
-
-        return flattened_results
-
-    def solve(self, input_data: List[str]) -> int:
-        final_result = []
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            results = list(executor.map(
-                lambda num: self.recursive_set(num, 0), 
-                input_data
-            ))
-        final_result = [
-            item for sublist in results 
-            for item in (sublist if isinstance(sublist, list) else [sublist])
-        ]
-
-        return len(final_result)
+            return 2
+    else:
+        output = count_stone_blinks(left_stone, depth - 1)
+        if right_stone is not None:
+            output += count_stone_blinks(right_stone, depth - 1)
+        return output
     
 if __name__ == "__main__":
     input_data = get_input_as_list("inputs/day_11.txt")[0]
-    blinks = 25
+    result_75 = 0
+    result_25 = 0
+    for stone in input_data:
+        result_75 += count_stone_blinks(int(stone), 75)
+        result_25 += count_stone_blinks(int(stone), 25)
     
-    cache = {}
-    for b in range(blinks):
-        cur_data = input_data
-        new_data = []  
-        for num in cur_data:
-            if num in cache:
-                new_data.extend(cache[num])
-                continue
-            if num == "0":
-                new_data.extend("1")
-                cache[num] = ["1"]
-                continue
-            if len(num) % 2 == 0:
-                mid = len(num) // 2
-                left_num = int(num[:mid])
-                right_num = int(num[mid:])
-                new_data.append(str(left_num))
-                new_data.append(str(right_num))
-                cache[num] = [str(left_num), str(right_num)]
-                continue
-            new_num = str(int(num) * 2024)
-            new_data.append(new_num)
-            cache[num] = [new_num]
-        input_data = new_data 
-        print(b)
-    print(len(input_data))
-    solver = RecursiveSetSolver()
-    result = solver.solve(list(input_data))
-    print(len(result))
+    print(result_25) # part 1
+    print(result_75) # part 2
