@@ -1,7 +1,7 @@
 import math
-from util.input import get_input_as_list    
+from util.input import get_input_as_list
 
-def parse_input(input_data, add_higher=False):
+def parse_input(input_data):
     games = []
     cur_game = {}
     for row in input_data:
@@ -32,20 +32,14 @@ if __name__ == "__main__":
         higherPriceY = game['prize'][1] + 10000000000000
         xGCD = math.gcd(AX, BX)
         yGCD = math.gcd(AY, BY)
-        if (prizeX % xGCD != 0):
-            continue
-        if (prizeY % yGCD != 0):
-            continue
-        
-        prize_sol = None
-        for i in range(0, max_times):
-            for j in range(0, max_times):
-                if (i * AX + j * BX == prizeX and i * AY + j * BY == prizeY):
-                    prize_solutions.append((i, j))
-                    prize_sol = (i, j)
-                    break
-    print(prize_solutions)
-    print(higher_prize_solutions)
-    total_prize = sum([sol[0] * 3 + sol[1] for sol in prize_solutions])
-    print(total_prize) # part 1
+        a = round((prizeY - ((BY * prizeX) / BX)) / (AY - ((BY * AX) / BX)))
+        b = round((prizeX - AX * a) / BX)
+        if AX * a + BX * b == prizeX and AY * a + BY * b == prizeY:
+            prize_solutions.append((a, b))
+        a = round((higherPriceY - ((BY * higherPriceX) / BX)) / (AY - ((BY * AX) / BX)))
+        b = round((higherPriceX - AX * a) / BX)
+        if AX * a + BX * b == higherPriceX and AY * a + BY * b == higherPriceY:
+            higher_prize_solutions.append((a, b))
+    print(sum([sol[0] * 3 + sol[1] for sol in prize_solutions])) # part 1
+    print(sum([sol[0] * 3 + sol[1] for sol in higher_prize_solutions])) # part 2
     
